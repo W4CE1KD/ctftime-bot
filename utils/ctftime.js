@@ -14,7 +14,7 @@ function getUnixTime(offsetDays = 0) {
   return Math.floor(Date.now() / 1000) + offsetDays * 86400;
 }
 
-// UPCOMING EVENTS
+// UPCOMING
 async function getUpcoming() {
   const start = getUnixTime(0);
   const finish = getUnixTime(30);
@@ -26,21 +26,21 @@ async function getUpcoming() {
   return res.data;
 }
 
-// 🔥 FIXED LIVE EVENTS
+// 🔥 PERFECT LIVE DETECTION
 async function getLive() {
   const now = Math.floor(Date.now() / 1000);
 
-  // fetch bigger range
+  // fetch larger range (3 days back → 3 days forward)
   const res = await api.get(
-    `${BASE_URL}?limit=100&start=${now - 86400}&finish=${now + 86400}`
+    `${BASE_URL}?limit=200&start=${now - 259200}&finish=${now + 259200}`
   );
 
-  // convert ISO → unix before comparing
   return res.data.filter(e => {
     const start = Math.floor(new Date(e.start).getTime() / 1000);
     const finish = Math.floor(new Date(e.finish).getTime() / 1000);
 
-    return now >= start && now <= finish;
+    // allow 10 minute margin (API sync delay)
+    return now >= start - 600 && now <= finish;
   });
 }
 
