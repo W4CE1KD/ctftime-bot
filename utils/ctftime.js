@@ -2,7 +2,6 @@ const axios = require("axios");
 
 const BASE_URL = "https://ctftime.org/api/v1/events/";
 
-// FIX → browser headers (CTFtime blocks default axios)
 const api = axios.create({
   headers: {
     "User-Agent":
@@ -27,17 +26,22 @@ async function getUpcoming() {
   return res.data;
 }
 
-// LIVE EVENTS
+// 🔥 FIXED LIVE EVENTS
 async function getLive() {
-  const now = getUnixTime(0);
+  const now = Math.floor(Date.now() / 1000);
 
+  // fetch bigger range
   const res = await api.get(
     `${BASE_URL}?limit=100&start=${now - 86400}&finish=${now + 86400}`
   );
 
-  return res.data.filter(
-    e => now >= e.start && now <= e.finish
-  );
+  // convert ISO → unix before comparing
+  return res.data.filter(e => {
+    const start = Math.floor(new Date(e.start).getTime() / 1000);
+    const finish = Math.floor(new Date(e.finish).getTime() / 1000);
+
+    return now >= start && now <= finish;
+  });
 }
 
 module.exports = { getUpcoming, getLive };
