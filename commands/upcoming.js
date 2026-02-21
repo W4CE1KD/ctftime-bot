@@ -16,16 +16,22 @@ module.exports = {
         .setColor("Blue");
 
       events.slice(0, 10).forEach(ctf => {
+
+        // 🔥 FIX → convert ISO date → UNIX timestamp
+        const start = Math.floor(new Date(ctf.start).getTime() / 1000);
+        const end = Math.floor(new Date(ctf.finish).getTime() / 1000);
+
         embed.addFields({
           name: ctf.title,
           value:
-            `🕒 Start: <t:${ctf.start}:F>\n` +
-            `🏁 End: <t:${ctf.finish}:F>\n` +
+            `🕒 Start: <t:${start}:F>\n` +
+            `🏁 End: <t:${end}:F>\n` +
             `👥 Team Size: ${ctf.restrictions || "Unknown"}`
         });
       });
 
       message.channel.send({ embeds: [embed] });
+
     } catch (err) {
       console.error(err);
       message.reply("Error fetching CTF data.");
