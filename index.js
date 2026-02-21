@@ -1,5 +1,4 @@
 const fs = require("fs");
-const path = require("path");
 const { Client, GatewayIntentBits } = require("discord.js");
 const { TOKEN, PREFIX } = require("./config/config");
 
@@ -13,16 +12,18 @@ const client = new Client({
 
 client.commands = new Map();
 
-const commandFiles = fs
+// LOAD COMMANDS
+const files = fs
   .readdirSync("./commands")
   .filter(f => f.endsWith(".js"));
 
-for (const file of commandFiles) {
+for (const file of files) {
   const command = require(`./commands/${file}`);
   client.commands.set(command.name, command);
 }
 
-client.on("ready", () => {
+// FIX → clientReady
+client.on("clientReady", () => {
   console.log(`Logged in as ${client.user.tag}`);
 });
 
@@ -30,16 +31,17 @@ client.on("messageCreate", async message => {
   if (message.author.bot) return;
   if (!message.content.startsWith(PREFIX)) return;
 
-  const args = message.content.slice(PREFIX.length).split(/ +/);
+  const args = message.content.slice(PREFIX.length).trim().split(/ +/);
   const cmd = args.shift().toLowerCase();
 
   const command = client.commands.get(cmd);
   if (!command) return;
 
   try {
-    command.execute(message, args);
+    await command.execute(message, args);
   } catch (err) {
     console.error(err);
+    message.reply("Command failed.");
   }
 });
 
