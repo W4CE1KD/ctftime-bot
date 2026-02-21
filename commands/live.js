@@ -12,11 +12,10 @@ module.exports = {
         return message.reply("No live CTFs right now.");
 
       const embed = new EmbedBuilder()
-        .setTitle("🟢 LIVE CTFs RIGHT NOW")
+        .setTitle("🟢 LIVE CTFs NOW")
         .setColor("Green");
 
       events.forEach(ctf => {
-
         const end = Math.floor(new Date(ctf.finish).getTime() / 1000);
 
         embed.addFields({
