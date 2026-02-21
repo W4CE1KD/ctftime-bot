@@ -12,7 +12,10 @@ module.exports = {
 
     const ctf = args.join(" ");
 
-    let votes = JSON.parse(fs.readFileSync(filePath));
+    let votes = {};
+    if (fs.existsSync(filePath)) {
+      votes = JSON.parse(fs.readFileSync(filePath));
+    }
 
     if (!votes[ctf]) votes[ctf] = [];
 
@@ -23,10 +26,10 @@ module.exports = {
 
     fs.writeFileSync(filePath, JSON.stringify(votes, null, 2));
 
-    let voteList = votes[ctf].map(v => `• ${v}`).join("\n");
+    const list = votes[ctf].map(v => `• ${v}`).join("\n");
 
     message.channel.send(
-      `🗳️ **Votes for ${ctf}**\n\n${voteList}`
+      `🗳️ **Votes for ${ctf}**\n\n${list}`
     );
   }
 };
