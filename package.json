@@ -1,0 +1,25 @@
+{
+  "name": "ctftime-bot",
+  "version": "1.0.0",
+  "description": "Discord bot for CTFtime upcoming, live events and voting system",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js"
+  },
+  "keywords": [
+    "discord",
+    "ctf",
+    "ctftime",
+    "bot",
+    "discordjs"
+  ],
+  "author": "your-name",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.7.2",
+    "discord.js": "^14.15.3",
+    "dotenv": "^16.4.5"
+  }
+}
