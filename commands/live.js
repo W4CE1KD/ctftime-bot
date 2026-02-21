@@ -16,15 +16,19 @@ module.exports = {
         .setColor("Green");
 
       events.forEach(ctf => {
+
+        const end = Math.floor(new Date(ctf.finish).getTime() / 1000);
+
         embed.addFields({
           name: ctf.title,
           value:
-            `⏳ Ends: <t:${ctf.finish}:R>\n` +
+            `⏳ Ends: <t:${end}:R>\n` +
             `👥 Team Size: ${ctf.restrictions || "Unknown"}`
         });
       });
 
       message.channel.send({ embeds: [embed] });
+
     } catch (err) {
       console.error(err);
       message.reply("Error fetching live CTFs.");
