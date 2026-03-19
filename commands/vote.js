@@ -5,10 +5,13 @@ const filePath = path.join(__dirname, "../data/votes.json");
 
 module.exports = {
   name: "vote",
+  description: "Vote for a CTF by name.",
+  usage: "!vote <ctf_name>",
 
   execute(message, args) {
-    if (!args.length)
+    if (!args.length) {
       return message.reply("Usage: !vote <ctf_name>");
+    }
 
     const ctf = args.join(" ");
 
@@ -17,19 +20,20 @@ module.exports = {
       votes = JSON.parse(fs.readFileSync(filePath));
     }
 
-    if (!votes[ctf]) votes[ctf] = [];
+    if (!votes[ctf]) {
+      votes[ctf] = [];
+    }
 
-    if (votes[ctf].includes(message.author.username))
+    if (votes[ctf].includes(message.author.username)) {
       return message.reply("You already voted!");
+    }
 
     votes[ctf].push(message.author.username);
 
     fs.writeFileSync(filePath, JSON.stringify(votes, null, 2));
 
-    const list = votes[ctf].map(v => `• ${v}`).join("\n");
+    const list = votes[ctf].map(voter => `- ${voter}`).join("\n");
 
-    message.channel.send(
-      `🗳️ **Votes for ${ctf}**\n\n${list}`
-    );
+    return message.channel.send(`**Votes for ${ctf}**\n\n${list}`);
   }
 };
