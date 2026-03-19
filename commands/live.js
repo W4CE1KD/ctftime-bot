@@ -1,18 +1,22 @@
 const { EmbedBuilder } = require("discord.js");
 const { getLive } = require("../utils/ctftime");
+const { getContestLinks } = require("../utils/contestLinks");
 
 module.exports = {
   name: "live",
+  description: "Show CTF events that are running right now.",
+  usage: "!live",
 
   async execute(message) {
     try {
       const events = await getLive();
 
-      if (!events.length)
+      if (!events.length) {
         return message.reply("No live CTFs right now.");
+      }
 
       const embed = new EmbedBuilder()
-        .setTitle("🟢 LIVE CTFs NOW")
+        .setTitle("Live CTFs")
         .setColor("Green");
 
       events.forEach(ctf => {
@@ -21,16 +25,16 @@ module.exports = {
         embed.addFields({
           name: ctf.title,
           value:
-            `⏳ Ends: <t:${end}:R>\n` +
-            `👥 Team Size: ${ctf.restrictions || "Unknown"}`
+            getContestLinks(ctf) +
+            `Ends: <t:${end}:R>\n` +
+            `Team Size: ${ctf.restrictions || "Unknown"}`
         });
       });
 
-      message.channel.send({ embeds: [embed] });
-
+      return message.channel.send({ embeds: [embed] });
     } catch (err) {
       console.error(err);
-      message.reply("Error fetching live CTFs.");
+      return message.reply("Error fetching live CTFs.");
     }
   }
 };
